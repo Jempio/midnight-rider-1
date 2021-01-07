@@ -24,6 +24,8 @@ REACH THE END BEFORE THE MAN GONNA GETCHU"""
 
 CHOICES = """
     ----
+    B. GO AT A MODERATE SPEED
+    C. GO FULL THROTTLE
     D. GAS STATION
     E. STATUS CHECK
     Q. QUIT
@@ -47,7 +49,7 @@ def main():
     # Variables
     done = False
 
-    kms_travelled = 0       # 100km is the end
+    kms_traveled = 0       # 100km is the end
     agent_distance = -20    # 0km is the end
     turns = 0
     tofu = 3                # 3 is max
@@ -62,17 +64,47 @@ def main():
         print(CHOICES)
 
         user_choice = input("What do you want to do?\n").lower().strip(",.!?")
+        if user_choice == "b":
+            # Moderate Speed
+            player_distance_now = random.randrange(8, 13)
+            agent_distance_now = random.randrange(6, 11)
 
-        if user_choice == "c":
-            pass
-            # fast
-            # burn fuel
-            # player distance traveled
-            # agent distance traveled
-            # player feedback
+            # Burn fuel
+            fuel -= random.randrange(3, 8)
+
+            # Player distance traveled
+            kms_traveled += player_distance_now
+
+            # Agents distance traveled
+            agent_distance -= player_distance_now - agent_distance_now
+
+            # Player feedback
+            print()
+            print("Zoooooom!")
+            print(f"-------- You travelled {player_distance_now} kms.")
+            print()
+
+        elif user_choice == "c":
+            # Fast
+            player_distance_now = random.randrange(10, 16)
+            agent_distance_now = random.randrange(7, 13)
+
+            # Burn fuel
+            fuel -= random.randrange(5, 11)
+
+            # Player distance traveled
+            kms_traveled += player_distance_now
+
+            # Agent distance traveled
+            agent_distance -= player_distance_now - agent_distance_now
+
+            # Player feedback
+            print()
+            print("ZOOOOOOOM!")
+            print(f"-------- You travelled {player_distance_now} kms.")
+            print()
 
         elif user_choice == "d":
-            pass
             # Refueling
             # Fill up the fuel tank
             fuel = MAX_FUEL_LEVEL
@@ -82,13 +114,13 @@ def main():
 
             # Give player feedback
             print("")
-            print("----- You filled the fuel tank -----")
-            print("----- The agents got closer... -----")
+            print("----- You filled the fuel tank")
+            print("----- The agents got closer...")
             print()
 
         elif user_choice == "e":
             print(f"\t---Status Check---")
-            print(f"\tkm travelled: {kms_travelled}.")
+            print(f"\tkm travelled: {kms_traveled}.")
             print(f"\tFuel remaining: {fuel} L.")
             print(f"\tAgents are now {abs(agent_distance)} kms behind.")
             print(f"\tYou have {tofu} tofus left.")
