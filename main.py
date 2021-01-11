@@ -46,6 +46,61 @@ BEFORE YOUR EYES, IT SHIFTS ITS SHAPE YOU'VE SEEN IT BEFORE, BUT ONLY ON TV.
 
 BUMBLEBEE...?"""
 
+LOSE_THIRST = """
+YOU DECIDED NOT TO DRINK A CHUG JUG AND COULD NO LONG FOCUS ON DRIVING.
+~CRASH~
+YOU HIT A LAMP POST.
+EVERYTHING AROUND YOU SLOWLY DARKENS.
+YOU BEGIN TO FEEL COLD.
+THIS IS THE END.
+THERE'S A FAINT WHISPERING.
+YOU SLOWLY FADE AWAY AS YOU HEAR NINJA WHISPER TO YOU.
+"GET GOOD KID."
+"""
+
+LOSE_AGENTS = """
+THE AGENTS HAVE CLOSED IN ON YOU.
+THERE ARE AT LEAST 20 CARS SURROUNDING YOU.
+THE LEAD CAR BUMPS YOUR PASSENGER SIDE
+YOU MANAGE TO CORRECT YOUR STEERING
+TO KEEP YOU FROM CRASHING
+
+YOU DIDN'T SEE THE AGENTS CAR BESIDE YOU.
+THE DRIVER BUMPS YOUR CAR.
+AND THAT'S IT.
+
+YOU SPIN UNCONTROLLABLY
+THE CAR FLIPS OVER AT LEAST TWO TIMES.
+OR MORE.... YOU SEEM TO HAVE LOST COUNT.
+
+SIRENS.
+
+"ARE THEY ALIVE?" THEY SAY AS YOU HEAR
+FOOTSTEPS GETTING CLOSER.
+"DOESN'T MATTER, ALL WE WANTED WAS THE CAR.
+
+YOU SEE NINJA SLOWLY STEP OUT OF THE OVERTURNED CAR.
+
+"YOU SHOULD'VE PLAYED QUEUED UP WITH A SQUAD"
+
+HE WAS IN THE CAR THE WHOLE TIME
+
+YOU DRIFT OFF INTO UNCONSCIOUSNESS."""
+
+LOSE_FUEL = """
+YOUR CAR SPUTTERS AND SEEMS TO LET OUT
+A BIG SIGH. THERE'S NO MORE FUEL LEFT.
+
+THE COPS SURROUND YOU AND THEY STEP 
+OUT OF THEIR CARS. NINJA RIPS THE 
+DOOR OPEN AND THROWS YOU OUT
+OF THE CAR.
+
+"MY CAR NOW"
+
+YOU FAILED...
+"""
+
 CHOICES = """
     ----
     A. DRINK A CHUG JUG
@@ -72,12 +127,14 @@ def main():
     MAX_FUEL_LEVEL = 50
     MAX_DISTANCE_TRAVELED = 100
     MAX_CHUG_JUG = 3
+    MAX_THIRST = 50
+    STARTING_AGENTS_DISTANCE = -20
 
     # Variables
     done = False
 
     kms_traveled = 0
-    agent_distance = -20
+    agent_distance = STARTING_AGENTS_DISTANCE
     turns = 0
     chug_jug = MAX_CHUG_JUG
     fuel = MAX_FUEL_LEVEL
@@ -85,7 +142,6 @@ def main():
 
     # MAIN LOOP
     while not done:
-        # TODO: RNG
         # NINJA - refills your food (5%)
         if chug_jug < 3 and random.random() < 0.05:
             # Refill chug_jugs
@@ -96,16 +152,40 @@ def main():
             print("******** \"You're welcome kid.\"")
             print("******** You look around. Ninja?")
 
-        # TODO: Check to see if reached END GAME
         # WIN - Traveled the distance required
         if kms_traveled > MAX_DISTANCE_TRAVELED:
             # Print win scenario
-            time.sleep(2)
+            time.sleep(1.5)
             type_text_output(WIN)
             # Break
             break
 
-        # TODO: Present the users their choices
+        # LOSE - by thirst
+        elif thirst > MAX_THIRST:
+            time.sleep(1.5)
+            type_text_output(LOSE_THIRST)
+            break
+
+        # LOSE - agents reached you
+        elif agent_distance >= 0:
+            time.sleep(1.5)
+            type_text_output(LOSE_AGENTS)
+            break
+
+        # LOSE - fuel ran out
+        elif fuel <= 0:
+            time.sleep(1.5)
+            type_text_output(LOSE_FUEL)
+            break
+
+        # Display Thirst
+        if thirst > 40:
+            print("******** Your throat is as dry as your texting ability. Drink a chug jug man.")
+            time.sleep(1)
+        elif thirst > 25:
+            print("******** You're getting a little thirsty might wanna get a little something to sip on.")
+            time.sleep(1)
+
         print(CHOICES)
 
         user_choice = input("What do you want to do?\n").lower().strip(",.!?")
@@ -126,7 +206,7 @@ def main():
 
         elif user_choice == "b":
             # Moderate Speed
-            player_distance_now = random.randrange(7, 13)
+            player_distance_now = random.randrange(4, 12)
             agent_distance_now = random.randrange(7, 13)
 
             # Burn fuel
@@ -190,17 +270,20 @@ def main():
         elif user_choice == "q":
             done = True
 
-        # Hunger
-        if user_choice not in ["a", "e"]:
-            thirst += random.randrange(5, 13)
+        else:
+            print("\tPLease choose a valid choice")
+
+        # UPKEEP
+        if user_choice in ["b", "c", "d"]:
+            thirst += random.randrange(8, 18)
+            turns += 1
 
         time.sleep(1.5)
 
-
-
-
     # Outro
-    print("Thanks for playing. Play again soon!")
+    print()
+    print("\nThanks for playing. Play again soon!")
+    print(f"You finished the game in {turns} turns.")
 
 
 if __name__ == "__main__":
